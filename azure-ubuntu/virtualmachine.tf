@@ -13,7 +13,7 @@ resource "azurerm_virtual_machine" "ub-vm" {
     }
     storage_os_disk { 
         name = var.vm_osdisk_name
-        vhd_uri = format("%s%s/%s", azurerm_storage_account.ub-st.primary_blob_endpoint, azurerm_storage_container.ub-st-cont.name, var.vm_osdisk_name)
+        vhd_uri = format("%s%s/%s%s", azurerm_storage_account.ub-st.primary_blob_endpoint, azurerm_storage_container.ub-st-cont.name, var.vm_osdisk_name, ".vhd")
         caching = "ReadWrite"
         create_option = "FromImage" 
     }
