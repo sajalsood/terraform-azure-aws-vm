@@ -1,5 +1,5 @@
 # create a resource group
 resource "azurerm_resource_group" "ub-rg" {
-    name = "ubuntu-rg"
-    location = "East US" 
+    name = var.resource_group_name
+    location = var.region
 }

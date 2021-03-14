@@ -1,7 +1,7 @@
 # create security group
 resource "azurerm_network_security_group" "ub-sg" {
-    name = "ubuntu-sg"
-    location = "eastus"
+    name = var.security_group_name
+    location = var.region
     resource_group_name = azurerm_resource_group.ub-rg.name
     security_rule {
         name = "SSH" 
@@ -15,14 +15,14 @@ resource "azurerm_network_security_group" "ub-sg" {
         destination_address_prefix = "*"
     }
     tags = {
-        environment = "ubuntu-a6"
+        environment = var.environment_name
     }
 }
 
 # create network interface
 resource "azurerm_network_interface" "ub-nic" {
-    name = "ubuntu-nic"
-    location = "East US"
+    name = var.network_interface_name
+    location = var.region
     resource_group_name = azurerm_resource_group.ub-rg.name
     ip_configuration {
         name = "ubuntu-configuration"
