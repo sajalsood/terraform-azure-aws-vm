@@ -70,6 +70,12 @@ resource "aws_security_group" "app_sg" {
     to_port     = "443"
     cidr_blocks = ["0.0.0.0/0"]
   }
+  ingress {
+    from_port   = 3389
+    to_port     = 3389
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
   egress {
     from_port   = 0
     to_port     = 0
@@ -94,6 +100,6 @@ resource "aws_instance" "ec2" {
     delete_on_termination = true
   }
   tags = {
-    "Name" = "ec2-ubuntu"
+    "Name" = "ec2-windows"
   }
 }
