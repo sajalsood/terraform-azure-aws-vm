@@ -21,7 +21,6 @@ resource "azurerm_virtual_machine" "win-vm" {
         computer_name = var.vm_hostname
         admin_username = var.vm_username
         admin_password = var.vm_password
-        custom_data = "${base64encode("Param($RemoteHostName = \"${null_resource.intermediates.triggers.full_vm_dns_name}\", $ComputerName = \"${var.vm_name}\", $WinRmPort = ${var.vm_winrm_port}) ${file("Deploy.PS1")}")}"
     }
     os_profile_windows_config { 
         provision_vm_agent = true
@@ -32,44 +31,7 @@ resource "azurerm_virtual_machine" "win-vm" {
             setting_name = "AutoLogon" 
             content = "<AutoLogon><Password><Value>${var.vm_password}</Value></Password><Enabled>true</Enabled><LogonCount>1</LogonCount><Username>${var.vm_username}</Username></AutoLogon>"
         }
-        additional_unattend_config {
-            pass = "oobeSystem"
-            component = "Microsoft-Windows-Shell-Setup"
-            setting_name = "FirstLogonCommands"
-            content = "${file("FirstLogonCommands.xml")}"
-        }
     }
-
-    provisioner "file" {
-        source = "Test.PS1" 
-        destination = "C:\\Scripts\\Test.PS1"
-        connection {
-            type = "winrm" 
-            https = true
-            insecure = true 
-            user = var.vm_username
-            password = var.vm_password
-            host = "${null_resource.intermediates.triggers.full_vm_dns_name}" 
-            port = "${var.vm_winrm_port}"
-        }
-    }
-
-    provisioner "remote-exec" {
-        inline = [
-            "powershell.exe -sta -ExecutionPolicy Unrestricted -file C:\\Scripts\\Test.ps1",
-        ]
-
-        connection {
-            type = "winrm"
-            https = true
-            insecure = true
-            user = var.vm_username
-            password = var.vm_password
-            host = "${null_resource.intermediates.triggers.full_vm_dns_name}"
-            port = "${var.vm_winrm_port}"
-        }
-    }
-
     tags = {
         environment = var.environment_name
     } 
